@@ -31,7 +31,7 @@ if uploaded_file:
                 st.info("🎙️ Generating Sassy Voice...")
                 api_key = st.secrets["ELEVENLABS_API_KEY"]
                 # Using 'Bella' voice ID - you can change this ID for different characters
-                voice_url = "https://api.elevenlabs.io/v1/text-to-speech/EXAVIToW1CfDrWqYkiU1"
+                voice_url = "https://api.elevenlabs.io/v1/text-to-speech/21m00Tcm4TlvDq8ikWAM"
                 headers = {"xi-api-key": api_key, "Content-Type": "application/json"}
                 data = {
                     "text": rant,
