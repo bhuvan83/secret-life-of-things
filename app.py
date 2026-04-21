@@ -2,35 +2,32 @@ import streamlit as st
 import subprocess
 import os
 
-st.title("🎙️ The Secret Life of Things")
+st.title("🎨 Cartoon Life of Things")
 
 uploaded_file = st.file_uploader("Capture your object", type=['jpg', 'jpeg', 'png'])
 
 if uploaded_file:
     with open("temp_obj.jpg", "wb") as f:
         f.write(uploaded_file.getbuffer())
-    st.image("temp_obj.jpg", use_container_width=True)
-    
-    persona = st.selectbox("Who is this?", ["Sassy Receipt", "Anxious Toaster", "Grumpy Dumbbell"])
-    rant = st.text_area("What is the rant?", "I saw that credit card statement!")
+    st.image("temp_obj.jpg", caption="Normal Object", use_container_width=True)
 
-    if st.button("🎬 Generate Viral Video"):
-        # This part helps the app find the file in the cloud folder
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        mouth_path = os.path.join(current_dir, "mouth.mp4")
-        
-        if not os.path.exists(mouth_path):
-            # Try the capital version just in case
-            mouth_path = os.path.join(current_dir, "mouth.MP4")
+    if st.button("🪄 Cartoonify & Animate"):
+        base_path = os.path.dirname(__file__)
+        mouth_path = os.path.join(base_path, "mouth.mp4")
+        output = "cartoon_skit.mp4"
 
         if os.path.exists(mouth_path):
-            st.info("Blending object and mouth... please wait.")
-            output = "final_skit.mp4"
+            st.info("Sketching and animating... please wait.")
             
-            # The Command now uses the full path to the mouth file
+            # The 'Cartoon' Command:
+            # edgedetect: creates outlines
+            # curves: boosts colors to look like a comic book
             cmd = (
                 f"ffmpeg -y -loop 1 -i temp_obj.jpg -i '{mouth_path}' "
-                f"-filter_complex '[1:v]scale=300:-1[m];[0:v][m]overlay=(W-w)/2:(H-h)*0.7:shortest=1' "
+                f"-filter_complex '[0:v]edgedetect=low=0.1:high=0.4,format=yuv420p[outline];"
+                f"[0:v]curves=preset=lighter_print[color];"
+                f"[color][outline]blend=all_mode=multiply[cartoonish];"
+                f"[1:v]scale=350:-1[m];[cartoonish][m]overlay=(W-w)/2:(H-h)*0.6:shortest=1' "
                 f"-pix_fmt yuv420p -an {output}"
             )
             
@@ -38,10 +35,11 @@ if uploaded_file:
                 result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
                 if result.returncode == 0:
                     st.video(output)
-                    st.success("Boom! Your skit is ready.")
+                    st.success("Your object is now a cartoon star!")
                 else:
                     st.error(f"FFmpeg error: {result.stderr}")
             except Exception as e:
                 st.error(f"Error: {e}")
         else:
-            st.error(f"Still can't find the mouth file! Looked at: {mouth_path}")
+            st.error("Missing mouth.mp4 file on GitHub!")
+
