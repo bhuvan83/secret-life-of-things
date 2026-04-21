@@ -17,7 +17,7 @@ if uploaded_file:
     rant = st.text_area("What is the rant?", "I saw that credit card statement!")
 
     if st.button("🎬 Generate Viral Video"):
-        if os.path.exists("mouth.mp4"):
+        if os.path.exists("mouth.MP4"):
             st.info("Blending object and mouth... please wait.")
             output = "final_skit.mp4"
             
